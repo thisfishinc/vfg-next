@@ -20,6 +20,7 @@ export default {
 	name: "formGenerator",
 	components: { formGroup },
 	mixins: [formMixin],
+	emits: ["validated", "model-updated"],
 	props: {
 		schema: Object,
 
@@ -150,7 +151,7 @@ export default {
 			this.$emit("validated", isValid, this.errors, this);
 		},
 
-		onModelUpdated(newVal, schema) {
+		onModelUpdated(newVal, schema) {			
 			this.$emit("model-updated", newVal, schema);
 		},
 

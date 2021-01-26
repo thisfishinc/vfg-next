@@ -31,7 +31,7 @@
 		:placeholder="schema.placeholder",
 		:readonly="schema.readonly",
 		:required="schema.required",
-		:size="schema.size",
+		:size="schema.size||20",
 		:src="schema.src",
 		:step="schema.step",
 		:width="schema.width",

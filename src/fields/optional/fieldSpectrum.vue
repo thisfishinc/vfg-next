@@ -1,5 +1,5 @@
 <template lang="pug">
-	input(type="text", :autocomplete="schema.autocomplete", :disabled="disabled", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName", :id="getFieldID(schema)")
+input(type="text", :autocomplete="schema.autocomplete", :disabled="disabled", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName", :id="getFieldID(schema)")
 </template>
 
 <script>
@@ -52,7 +52,7 @@ export default {
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.picker) this.picker.spectrum("destroy");
 	}
 };

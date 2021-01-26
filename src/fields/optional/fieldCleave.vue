@@ -1,5 +1,5 @@
 <template lang="pug">
-	input.form-control(type="text", :value="value", :autocomplete="schema.autocomplete", :disabled="disabled", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName", :id="getFieldID(schema)")
+input.form-control(type="text", :value="value", :autocomplete="schema.autocomplete", :disabled="disabled", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName", :id="getFieldID(schema)")
 </template>
 
 <script>
@@ -46,7 +46,7 @@ export default {
 					})
 				);
 
-				if (this.cleave.properties && this.cleave.properties.hasOwnProperty("result")) {
+				if (this.cleave.properties && ("result" in this.cleave.properties)) {
 					this.$watch("cleave.properties.result", () => {
 						this.value = this.cleave.properties.result;
 					});
@@ -65,7 +65,7 @@ export default {
 		}
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.cleave) {
 			this.cleave.destroy();
 			this.$el.removeEventListener("input", this.inputChange);

@@ -92,7 +92,7 @@ export default {
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.slider) this.slider.noUiSlider.off("change");
 	}
 };

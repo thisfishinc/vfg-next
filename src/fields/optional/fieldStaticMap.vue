@@ -1,5 +1,5 @@
 <template lang="pug">
-	img(:src="mapLink")
+img(:src="mapLink||'data:,'")
 </template>
 
 <script>
@@ -36,6 +36,7 @@ export default {
 					return url;
 				}
 			}
+			return "";
 		}
 	}
 };

@@ -32,6 +32,7 @@ export default {
 	name: "form-group",
 	components: fieldComponents,
 	mixins: [formMixin],
+	emits: ["validated", "model-updated"],	
 	props: {
 		vfg: {
 			type: Object,

@@ -26,7 +26,7 @@ function attributesDirective(el, binding, vnode) {
 
 export default {
 	props: ["vfg", "model", "schema", "formOptions", "disabled"],
-
+	emits: ["validated", "model-updated"],
 	data() {
 		return {
 			errors: [],
@@ -177,9 +177,9 @@ export default {
 		},
 
 		setModelValueByPath(path, value) {
+
 			// convert array indexes to properties
 			let s = path.replace(/\[(\w+)\]/g, ".$1");
-
 			// strip a leading dot
 			s = s.replace(/^\./, "");
 
@@ -195,12 +195,13 @@ export default {
 						o = o[k];
 					} else {
 						// Create missing property (new level)
-						this.$root.$set(o, k, {});
+						//this.$root.$set(o, k, {});
 						o = o[k];
 					}
 				else {
 					// Set final property value
-					this.$root.$set(o, k, value);
+					//this.$root.$set(o, k, value);
+					o[k] = value;
 					return;
 				}
 
