@@ -94,21 +94,21 @@ If you want the slim down version, here is the changes:
 ```js
 // the "full" way
 <script>
-  import VueFormGenerator, { fullComponents } from "fvg-next";
-  import "vue-form-generator/dist/vfg.css";  // optional full css additions
+  import VueFormGenerator, { fullComponents } from "vfg-next";
+  import "vfg-next/dist/vfg-next.css";  // optional full css additions
   ...
   app.use(VueFormGenerator,{ components: fullComponents })
 </script>
 
 // the "core" way
 <script>
-  import VueFormGenerator, { coreComponents } from "fvg-next";
-  import "vue-form-generator/dist/vfg.css";  // optional full css additions
+  import VueFormGenerator, { coreComponents } from "vfg-next";
+  import "vfg-next/dist/vfg-next.css";  // optional full css additions
   ...
   app.use(VueFormGenerator,{ components: coreComponents })
 </script>
 
-// or you can add selected components only in "tree shaking" way,
+// or you can add certain components only in "tree shaking" way,
 
 // core:
 // fieldCheckbox,  fieldChecklist,  fieldInput,  fieldLabel,  fieldRadios,
@@ -119,8 +119,8 @@ If you want the slim down version, here is the changes:
 // fieldStaticMap, fieldSwitch, fieldVueMultiSelect
 
 <script>
-  import VueFormGenerator, { fieldInput,  fieldRadios } from "fvg-next";
-  import "vue-form-generator/dist/vfg.css";  // optional full css additions
+  import VueFormGenerator, { fieldInput,  fieldRadios } from "vfg-next";
+  import "vfg-next/dist/vfg-next.css";  // optional full css additions
   ...
   app.use(VueFormGenerator,{ components: { fieldInput, fieldRadios } })
 </script>
@@ -136,11 +136,13 @@ If you want the slim down version, here is the changes:
 </template>
 
 <script>
-import Vue from 'vue'
-import VueFormGenerator from 'vue-form-generator'
-import 'vue-form-generator/dist/vfg.css'
-
-Vue.use(VueFormGenerator)
+import { createApp } from "vue"
+import VueFormGenerator, { validators, fieldInput, fieldSelect, fieldCheckbox } from "vfg-next";
+import "vfg-next/dist/vfg-next.css";  // optional full css additions
+...
+const app = createApp(...)
+app.use(VueFormGenerator, components: { fieldInput, fieldSelect, fieldCheckbox } )
+app.mount(...)
 
 export default {
   data () {
@@ -180,7 +182,7 @@ export default {
             min: 6,
             required: true,
             hint: 'Minimum 6 characters',
-            validator: VueFormGenerator.validators.string
+            validator: validators.string
           },
           {
             type: 'select',
@@ -218,12 +220,12 @@ export default {
 Usage in local components
 
 ```js
-import VueFormGenerator from "vue-form-generator";
+import { component as VFG } from "vfg-next";
 
 //component javascript
 export default {
 	components: {
-		"vue-form-generator": VueFormGenerator.component
+		"vue-form-generator": VFG
 	}
 };
 ```
