@@ -1,6 +1,6 @@
 # vue-form-generator [![NPM version](https://img.shields.io/npm/v/vue-form-generator.svg)](https://www.npmjs.com/package/vue-form-generator) ![VueJS v2.x compatible](https://img.shields.io/badge/vue%202.x-compatible-green.svg)
 
-A schema-based form generator component for Vue.js.
+A schema-based form generator component for Vue.js 3.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d27be05a35bf459b9292b8172e314a08)](https://www.codacy.com/app/mereg-norbert/vue-form-generator_2?utm_source=github.com&utm_medium=referral&utm_content=vue-generators/vue-form-generator&utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/vue-generators/vue-form-generator.svg?branch=master)](https://travis-ci.org/vue-generators/vue-form-generator)
@@ -53,6 +53,12 @@ You can find details about dependencies in the official [documentation](https://
 
 You can install it via [NPM](http://npmjs.org/) or [yarn](https://yarnpkg.com/).
 
+#### Latest version for Vue 3.x
+
+```
+$ npm install vfg-next
+```
+
 #### Latest version for Vue 2.x
 
 ```
@@ -88,14 +94,31 @@ If you want the slim down version, here is the changes:
 ```js
 // the "full" way
 <script>
-  import VueFormGenerator from "vue-form-generator";
+  import VueFormGenerator, { fullComponents } from "fvg-next";
   import "vue-form-generator/dist/vfg.css";  // optional full css additions
+  ...
+  app.use(VueFormGenerator,{ components: fullComponents })
 </script>
 
 // the "core" way
 <script>
-  import VueFormGenerator from "vue-form-generator/dist/vfg-core.js";
-  import "vue-form-generator/dist/vfg-core.css";  // optional core css additions
+  import VueFormGenerator, { coreComponents } from "fvg-next";
+  import "vue-form-generator/dist/vfg.css";  // optional full css additions
+  ...
+  app.use(VueFormGenerator,{ components: coreComponents })
+</script>
+
+// or you can add selected components only in tree shaking way,
+// fieldCheckbox,  fieldChecklist,  fieldInput,  fieldLabel,  fieldRadios,
+// fieldSelect, fieldSubmit, fieldTextArea, fieldUpload
+// fieldCleave, fieldDateTimePicker, fieldGoogleAddress, fieldImage, fieldMasked,
+// fieldNoUiSlider, fieldPikaday, fieldRangeSlider, fieldSelectEx, fieldSpectrum,
+// fieldStaticMap, fieldSwitch, fieldVueMultiSelect
+<script>
+  import VueFormGenerator, { fieldInput,  fieldRadios } from "fvg-next";
+  import "vue-form-generator/dist/vfg.css";  // optional full css additions
+  ...
+  app.use(VueFormGenerator,{ components: { fieldInput, fieldRadios } })
 </script>
 ```
 
