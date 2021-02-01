@@ -1,5 +1,15 @@
-<template lang="pug">
-input(type="text", :autocomplete="schema.autocomplete", :data-disable="disabled", :data-max="schema.max", :data-min="schema.min", :data-step="schema.step", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName")
+<template>
+  <input
+    type="text"
+    :autocomplete="schema.autocomplete"
+    :data-disable="disabled"
+    :data-max="schema.max"
+    :data-min="schema.min"
+    :data-step="schema.step"
+    :placeholder="schema.placeholder"
+    :readonly="schema.readonly"
+    :name="schema.inputName"
+  />
 </template>
 
 <script>
@@ -7,76 +17,77 @@ input(type="text", :autocomplete="schema.autocomplete", :data-disable="disabled"
 import abstractField from "../abstractField";
 import { defaults, isArray } from "lodash";
 
-export default {
-	mixins: [abstractField],
+import { defineComponent } from "vue";
 
-	data() {
-		return {
-			slider: null
-		};
-	},
+export default defineComponent({
+  mixins: [abstractField],
 
-	watch: {
-		model: function() {
-			if (window.$ && window.$.fn.ionRangeSlider) {
-				let valueFrom, valueTo;
-				if (isArray(this.value)) {
-					[valueFrom, valueTo] = this.value;
-				} else valueFrom = this.value;
+  data() {
+    return {
+      slider: null
+    };
+  },
 
-				if (this.slider) {
-					this.slider.update({
-						from: valueFrom,
-						to: valueTo
-					});
-				}
-			}
-		}
-	},
+  watch: {
+    model: function() {
+      if (window.$ && window.$.fn.ionRangeSlider) {
+        let valueFrom, valueTo;
+        if (isArray(this.value)) {
+          [valueFrom, valueTo] = this.value;
+        } else valueFrom = this.value;
 
-	mounted() {
-		this.$nextTick(function() {
-			if (window.$ && window.$.fn.ionRangeSlider) {
-				let valueFrom, valueTo;
-				if (isArray(this.value)) {
-					[valueFrom, valueTo] = this.value;
-				} else valueFrom = this.value;
+        if (this.slider) {
+          this.slider.update({
+            from: valueFrom,
+            to: valueTo
+          });
+        }
+      }
+    }
+  },
 
-				let self = this;
-				$(this.$el).ionRangeSlider(
-					defaults(this.schema.rangeSliderOptions || {}, {
-						type: "single",
-						grid: true,
-						hide_min_max: true,
-						from: valueFrom,
-						to: valueTo,
-						onChange(slider) {
-							if (self.slider.options.type === "double") {
-								self.value = [slider.from, slider.to];
-							} else {
-								self.value = slider.from;
-							}
-						}
-					})
-				);
-				this.slider = $(this.$el).data("ionRangeSlider");
-			} else {
-				console.warn(
-					"ion.rangeSlider library is missing. Please download from https://github.com/IonDen/ion.rangeSlider and load the script and CSS in the HTML head section!"
-				);
-			}
-		});
-	},
+  mounted() {
+    this.$nextTick(function() {
+      if (window.$ && window.$.fn.ionRangeSlider) {
+        let valueFrom, valueTo;
+        if (isArray(this.value)) {
+          [valueFrom, valueTo] = this.value;
+        } else valueFrom = this.value;
 
-	beforeUnmount() {
-		if (this.slider) this.slider.destroy();
-	}
-};
+        let self = this;
+        $(this.$el).ionRangeSlider(
+          defaults(this.schema.rangeSliderOptions || {}, {
+            type: "single",
+            grid: true,
+            hide_min_max: true,
+            from: valueFrom,
+            to: valueTo,
+            onChange(slider) {
+              if (self.slider.options.type === "double") {
+                self.value = [slider.from, slider.to];
+              } else {
+                self.value = slider.from;
+              }
+            }
+          })
+        );
+        this.slider = $(this.$el).data("ionRangeSlider");
+      } else {
+        console.warn(
+          "ion.rangeSlider library is missing. Please download from https://github.com/IonDen/ion.rangeSlider and load the script and CSS in the HTML head section!"
+        );
+      }
+    });
+  },
+
+  beforeUnmount() {
+    if (this.slider) this.slider.destroy();
+  }
+});
 </script>
-
 
 <style lang="scss">
 .vue-form-generator .field-rangeSlider .irs {
-	width: 100%;
+  width: 100%;
 }
 </style>

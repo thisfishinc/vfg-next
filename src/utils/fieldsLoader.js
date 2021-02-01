@@ -1,57 +1,24 @@
-import { defineAsyncComponent } from "vue";
-
-const fieldCheckbox = defineAsyncComponent(() => import( "../fields/core/fieldCheckbox.vue"));
-const fieldChecklist = defineAsyncComponent(() => import( "../fields/core/fieldChecklist.vue"));
-const fieldInput = defineAsyncComponent(() => import("../fields/core/fieldInput.vue"));
-const fieldLabel = defineAsyncComponent(() => import( "../fields/core/fieldLabel.vue"));
-const fieldRadios = defineAsyncComponent(() => import( "../fields/core/fieldRadios.vue"));
-const fieldSelect = defineAsyncComponent(() => import( "../fields/core/fieldSelect.vue"));
-const fieldSubmit = defineAsyncComponent(() => import( "../fields/core/fieldSubmit.vue"));
-const fieldTextArea = defineAsyncComponent(() => import( "../fields/core/fieldTextArea.vue"));
-const fieldUpload = defineAsyncComponent(() => import( "../fields/core/fieldUpload.vue"));
-
-const fieldCleave = defineAsyncComponent(() => import( "../fields/optional/fieldCleave.vue"));
-const fieldDateTimePicker = defineAsyncComponent(() => import( "../fields/optional/fieldDateTimePicker.vue"));
-const fieldGoogleAddress = defineAsyncComponent(() => import( "../fields/optional/fieldGoogleAddress.vue"));
-const fieldImage = defineAsyncComponent(() => import( "../fields/optional/fieldImage.vue"));
-const fieldMasked = defineAsyncComponent(() => import( "../fields/optional/fieldMasked.vue"));
-const fieldNoUiSlider = defineAsyncComponent(() => import( "../fields/optional/fieldNoUiSlider.vue"));
-const fieldPikaday = defineAsyncComponent(() => import( "../fields/optional/fieldPikaday.vue"));
-const fieldRangeSlider = defineAsyncComponent(() => import( "../fields/optional/fieldRangeSlider.vue"));
-const fieldSelectEx = defineAsyncComponent(() => import( "../fields/optional/fieldSelectEx.vue"));
-const fieldSpectrum = defineAsyncComponent(() => import( "../fields/optional/fieldSpectrum.vue"));
-const fieldStaticMap = defineAsyncComponent(() => import( "../fields/optional/fieldStaticMap.vue"));
-const fieldSwitch = defineAsyncComponent(() => import( "../fields/optional/fieldSwitch.vue"));
-const fieldVueMultiSelect = defineAsyncComponent(() => import( "../fields/optional/fieldVueMultiSelect.vue"));
-
-let fieldComponents = {
-	fieldCheckbox,
-	fieldChecklist,
-	fieldInput,
-	fieldLabel,
-	fieldRadios,
-	fieldSelect,
-	fieldSubmit,
-	fieldTextArea,
-	fieldUpload
-};
-
-if (process.env.FULL_BUNDLE) {
-	fieldComponents = Object.assign(fieldComponents,{
-		fieldCleave,
-		fieldDateTimePicker,
-		fieldGoogleAddress,
-		fieldImage,
-		fieldMasked,
-		fieldNoUiSlider,
-		fieldPikaday,
-		fieldRangeSlider,
-		fieldSelectEx,
-		fieldSpectrum,
-		fieldStaticMap,
-		fieldSwitch,
-		fieldVueMultiSelect
-	});
-}
-
-export default fieldComponents;
+//core components
+export { default as fieldCheckbox } from "../fields/core/fieldCheckbox.vue";
+export { default as fieldChecklist } from "../fields/core/fieldChecklist.vue";
+export { default as fieldInput } from "../fields/core/fieldInput.vue";
+export { default as fieldLabel } from "../fields/core/fieldLabel.vue";
+export { default as fieldRadios } from "../fields/core/fieldRadios.vue";
+export { default as fieldSelect } from "../fields/core/fieldSelect.vue";
+export { default as fieldSubmit } from "../fields/core/fieldSubmit.vue";
+export { default as fieldTextArea } from "../fields/core/fieldTextArea.vue";
+export { default as fieldUpload } from "../fields/core/fieldUpload.vue";
+//optional components
+export { default as fieldCleave } from "../fields/optional/fieldCleave.vue";
+export { default as fieldDateTimePicker } from "../fields/optional/fieldDateTimePicker.vue";
+export { default as fieldGoogleAddress } from "../fields/optional/fieldGoogleAddress.vue";
+export { default as fieldImage } from "../fields/optional/fieldImage.vue";
+export { default as fieldMasked } from "../fields/optional/fieldMasked.vue";
+export { default as fieldNoUiSlider } from "../fields/optional/fieldNoUiSlider.vue";
+export { default as fieldPikaday } from "../fields/optional/fieldPikaday.vue";
+export { default as fieldRangeSlider } from "../fields/optional/fieldRangeSlider.vue";
+export { default as fieldSelectEx } from "../fields/optional/fieldSelectEx.vue";
+export { default as fieldSpectrum } from "../fields/optional/fieldSpectrum.vue";
+export { default as fieldStaticMap } from "../fields/optional/fieldStaticMap.vue";
+export { default as fieldSwitch } from "../fields/optional/fieldSwitch.vue";
+export { default as fieldVueMultiSelect } from "../fields/optional/fieldVueMultiSelect.vue";

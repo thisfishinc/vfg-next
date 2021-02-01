@@ -1,19 +1,26 @@
-<template lang="pug">
-span(:id="getFieldID(schema)", :class="schema.fieldClasses", v-attributes="'label'") {{ value }}
+<template>
+  <span
+    :id="getFieldID(schema)"
+    v-attributes="'label'"
+    :class="schema.fieldClasses"
+  >
+    {{ value }}
+  </span>
 </template>
 
 <script>
 import abstractField from "../abstractField";
+import { defineComponent } from "vue";
 
-export default {
-	mixins: [abstractField]
-};
+export default defineComponent({
+  mixins: [abstractField]
+});
 </script>
 
 <style lang="scss">
 .vue-form-generator .field-label span {
-	display: block;
-	width: 100%;
-	margin-left: 12px;
+  display: block;
+  width: 100%;
+  margin-left: 12px;
 }
 </style>

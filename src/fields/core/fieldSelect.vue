@@ -1,137 +1,172 @@
-<template lang="pug">
-select.form-control(v-model="value", :disabled="disabled", :name="schema.inputName", :id="getFieldID(schema)", :class="schema.fieldClasses", v-attributes="'input'")
-	option(v-if="!selectOptions.hideNoneSelectedText", :disabled="schema.required", :value="null") {{ selectOptions.noneSelectedText || "&lt;Nothing selected&gt;" }}
-
-	template(v-for="item in items")
-		optgroup(v-if="item.group", :label="getGroupName(item)")
-			option(v-if="item.ops", v-for="i in item.ops", :value="getItemValue(i)") {{ getItemName(i) }}
-
-		option(v-if="!item.group", :value="getItemValue(item)") {{ getItemName(item) }}
+<template>
+  <select
+    :id="getFieldID(schema)"
+    v-model="value"
+    v-attributes="'input'"
+    class="form-control"
+    :disabled="disabled"
+    :name="schema.inputName"
+    :class="schema.fieldClasses"
+  >
+    <option
+      v-if="!selectOptions.hideNoneSelectedText"
+      :disabled="schema.required"
+      :value="null"
+    >
+      {{ selectOptions.noneSelectedText || "&lt;Nothing selected&gt;" }}
+    </option>
+    <template v-for="(item, index) in items">
+      <optgroup
+        v-if="item.group"
+        :key="index + '_optgroup'"
+        :label="getGroupName(item)"
+      >
+        <template v-if="item.ops">
+          <option v-for="i in item.ops" :key="i" :value="getItemValue(i)">
+            {{ getItemName(i) }}
+          </option>
+        </template>
+      </optgroup>
+      <option
+        v-else-if="!item.group"
+        :key="index + '_option'"
+        :value="getItemValue(item)"
+      >
+        {{ getItemName(item) }}
+      </option>
+    </template>
+  </select>
 </template>
 
 <script>
 import { isObject, isNil, find } from "lodash";
 import abstractField from "../abstractField";
 
-export default {
-	mixins: [abstractField],
+import { defineComponent } from "vue";
 
-	computed: {
-		selectOptions() {
-			return this.schema.selectOptions || {};
-		},
+export default defineComponent({
+  mixins: [abstractField],
 
-		items() {
-			let values = this.schema.values;
-			if (typeof values == "function") {
-				return this.groupValues(values.apply(this, [this.model, this.schema]));
-			} else return this.groupValues(values);
-		}
-	},
+  computed: {
+    selectOptions() {
+      return this.schema.selectOptions || {};
+    },
 
-	methods: {
-		formatValueToField(value) {
-			if (isNil(value)) {
-				return null;
-			}
-			return value;
-		},
+    items() {
+      let values = this.schema.values;
+      if (typeof values == "function") {
+        return this.groupValues(values.apply(this, [this.model, this.schema]));
+      } else return this.groupValues(values);
+    }
+  },
 
-		groupValues(values) {
-			let array = [];
-			let arrayElement = {};
+  methods: {
+    formatValueToField(value) {
+      if (isNil(value)) {
+        return null;
+      }
+      return value;
+    },
 
-			values.forEach(item => {
-				arrayElement = null;
+    groupValues(values) {
+      let array = [];
+      let arrayElement = {};
 
-				if (item.group && isObject(item)) {
-					// There is in a group.
+      values.forEach(item => {
+        arrayElement = null;
 
-					// Find element with this group.
-					arrayElement = find(array, i => i.group === item.group);
+        if (item.group && isObject(item)) {
+          // There is in a group.
 
-					if (arrayElement) {
-						// There is such a group.
+          // Find element with this group.
+          arrayElement = find(array, i => i.group === item.group);
 
-						arrayElement.ops.push({
-							id: item.id,
-							name: item.name
-						});
-					} else {
-						// There is not such a group.
+          if (arrayElement) {
+            // There is such a group.
 
-						// Initialising.
-						arrayElement = {
-							group: "",
-							ops: []
-						};
+            arrayElement.ops.push({
+              id: item.id,
+              name: item.name
+            });
+          } else {
+            // There is not such a group.
 
-						// Set group.
-						arrayElement.group = item.group;
+            // Initialising.
+            arrayElement = {
+              group: "",
+              ops: []
+            };
 
-						// Set Group element.
-						arrayElement.ops.push({
-							id: item.id,
-							name: item.name
-						});
+            // Set group.
+            arrayElement.group = item.group;
 
-						// Add array.
-						array.push(arrayElement);
-					}
-				} else {
-					// There is not in a group.
-					array.push(item);
-				}
-			});
+            // Set Group element.
+            arrayElement.ops.push({
+              id: item.id,
+              name: item.name
+            });
 
-			// With Groups.
-			return array;
-		},
+            // Add array.
+            array.push(arrayElement);
+          }
+        } else {
+          // There is not in a group.
+          array.push(item);
+        }
+      });
 
-		getGroupName(item) {
-			if (item && item.group) {
-				return item.group;
-			}
+      // With Groups.
+      return array;
+    },
 
-			throw "Group name is missing! https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
-		},
+    getGroupName(item) {
+      if (item && item.group) {
+        return item.group;
+      }
 
-		getItemValue(item) {
-			if (isObject(item)) {
-				if (typeof this.schema["selectOptions"] !== "undefined" && typeof this.schema["selectOptions"]["value"] !== "undefined") {
-					return item[this.schema.selectOptions.value];
-				} else {
-					// Use 'id' instead of 'value' cause of backward compatibility
-					if (typeof item["id"] !== "undefined") {
-						return item.id;
-					} else {
-						throw "`id` is not defined. If you want to use another key name, add a `value` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
-					}
-				}
-			} else {
-				return item;
-			}
-		},
+      throw "Group name is missing! https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
+    },
 
-		getItemName(item) {
-			if (isObject(item)) {
-				if (typeof this.schema["selectOptions"] !== "undefined" && typeof this.schema["selectOptions"]["name"] !== "undefined") {
-					return item[this.schema.selectOptions.name];
-				} else {
-					if (typeof item["name"] !== "undefined") {
-						return item.name;
-					} else {
-						throw "`name` is not defined. If you want to use another key name, add a `name` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
-					}
-				}
-			} else {
-				return item;
-			}
-		}
-	}
-};
+    getItemValue(item) {
+      if (isObject(item)) {
+        if (
+          typeof this.schema["selectOptions"] !== "undefined" &&
+          typeof this.schema["selectOptions"]["value"] !== "undefined"
+        ) {
+          return item[this.schema.selectOptions.value];
+        } else {
+          // Use 'id' instead of 'value' cause of backward compatibility
+          if (typeof item["id"] !== "undefined") {
+            return item.id;
+          } else {
+            throw "`id` is not defined. If you want to use another key name, add a `value` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
+          }
+        }
+      } else {
+        return item;
+      }
+    },
+
+    getItemName(item) {
+      if (isObject(item)) {
+        if (
+          typeof this.schema["selectOptions"] !== "undefined" &&
+          typeof this.schema["selectOptions"]["name"] !== "undefined"
+        ) {
+          return item[this.schema.selectOptions.name];
+        } else {
+          if (typeof item["name"] !== "undefined") {
+            return item.name;
+          } else {
+            throw "`name` is not defined. If you want to use another key name, add a `name` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
+          }
+        }
+      } else {
+        return item;
+      }
+    }
+  }
+});
 </script>
 
-
-<style lang="sass">
-</style>
+<style lang="sass"></style>
