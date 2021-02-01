@@ -108,12 +108,16 @@ If you want the slim down version, here is the changes:
   app.use(VueFormGenerator,{ components: coreComponents })
 </script>
 
-// or you can add selected components only in tree shaking way,
+// or you can add selected components only in "tree shaking" way,
+
+// core:
 // fieldCheckbox,  fieldChecklist,  fieldInput,  fieldLabel,  fieldRadios,
 // fieldSelect, fieldSubmit, fieldTextArea, fieldUpload
+// optional:
 // fieldCleave, fieldDateTimePicker, fieldGoogleAddress, fieldImage, fieldMasked,
 // fieldNoUiSlider, fieldPikaday, fieldRangeSlider, fieldSelectEx, fieldSpectrum,
 // fieldStaticMap, fieldSwitch, fieldVueMultiSelect
+
 <script>
   import VueFormGenerator, { fieldInput,  fieldRadios } from "fvg-next";
   import "vue-form-generator/dist/vfg.css";  // optional full css additions
