@@ -49,7 +49,7 @@ const plugins = [
 
 export default {
   inlineDynamicImports: true,
-  external: Object.keys(pkg.peerDependencies),
+  external: ['vue', 'lodash', 'fecha'],
   input: "src/index_esm.js",
   output: {
     banner,
@@ -59,7 +59,7 @@ export default {
     format: "es",
     sourcemap: true,
     exports: "named",
-    globals: { vue: "Vue" }
+    globals: { vue: 'vue', lodash: 'lodash', fecha: 'fecha' }
   },
   plugins
 };
