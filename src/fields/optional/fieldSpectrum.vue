@@ -21,7 +21,7 @@ export default defineComponent({
 
   data() {
     return {
-      picker: null
+      picker: null,
     };
   },
 
@@ -35,11 +35,11 @@ export default defineComponent({
     disabled(val) {
       if (val) this.picker.spectrum("disable");
       else this.picker.spectrum("enable");
-    }
+    },
   },
 
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       if (window.$ && window.$.fn.spectrum) {
         this.picker = $(this.$el)
           .spectrum("destroy")
@@ -50,9 +50,9 @@ export default defineComponent({
               disabled: this.schema.disabled,
               allowEmpty: !this.schema.required,
               preferredFormat: "hex",
-              change: color => {
+              change: (color) => {
                 this.value = color ? color.toString() : null;
-              }
+              },
             })
           );
         this.picker.spectrum("set", this.value);
@@ -66,7 +66,7 @@ export default defineComponent({
 
   beforeUnmount() {
     if (this.picker) this.picker.spectrum("destroy");
-  }
+  },
 });
 </script>
 

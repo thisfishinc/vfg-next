@@ -31,8 +31,8 @@ export default defineComponent({
         // Schema has defined onChange method.
         this.schema.onChanged.call(this, this.model, this.schema, $event, this);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

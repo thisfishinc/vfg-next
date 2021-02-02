@@ -57,7 +57,7 @@ export default defineComponent({
       if (typeof values == "function") {
         return this.groupValues(values.apply(this, [this.model, this.schema]));
       } else return this.groupValues(values);
-    }
+    },
   },
 
   methods: {
@@ -72,21 +72,21 @@ export default defineComponent({
       let array = [];
       let arrayElement = {};
 
-      values.forEach(item => {
+      values.forEach((item) => {
         arrayElement = null;
 
         if (item.group && isObject(item)) {
           // There is in a group.
 
           // Find element with this group.
-          arrayElement = find(array, i => i.group === item.group);
+          arrayElement = find(array, (i) => i.group === item.group);
 
           if (arrayElement) {
             // There is such a group.
 
             arrayElement.ops.push({
               id: item.id,
-              name: item.name
+              name: item.name,
             });
           } else {
             // There is not such a group.
@@ -94,7 +94,7 @@ export default defineComponent({
             // Initialising.
             arrayElement = {
               group: "",
-              ops: []
+              ops: [],
             };
 
             // Set group.
@@ -103,7 +103,7 @@ export default defineComponent({
             // Set Group element.
             arrayElement.ops.push({
               id: item.id,
-              name: item.name
+              name: item.name,
             });
 
             // Add array.
@@ -164,8 +164,8 @@ export default defineComponent({
       } else {
         return item;
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -28,7 +28,7 @@ export default defineComponent({
         $event.preventDefault();
         let validateAsync = objGet(this.formOptions, "validateAsync", false);
         let errors = this.vfg.validate();
-        let handleErrors = errors => {
+        let handleErrors = (errors) => {
           if (
             (validateAsync && !isEmpty(errors)) ||
             (!validateAsync && !errors)
@@ -56,8 +56,8 @@ export default defineComponent({
         // so it can be handled there
         this.schema.onSubmit(this.model, this.schema, $event);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

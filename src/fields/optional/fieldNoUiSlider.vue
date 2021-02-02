@@ -17,7 +17,7 @@ export default defineComponent({
 
   data() {
     return {
-      slider: null
+      slider: null,
     };
   },
 
@@ -32,15 +32,15 @@ export default defineComponent({
       return (
         this.schema.noUiSliderOptions && this.schema.noUiSliderOptions.tooltips
       );
-    }
+    },
   },
 
   watch: {
-    model: function() {
+    model: function () {
       if (window.noUiSlider && this.slider && this.slider.noUiSlider) {
         this.slider.noUiSlider.set(this.value);
       }
-    }
+    },
   },
 
   mounted() {
@@ -53,8 +53,8 @@ export default defineComponent({
             start: this.getStartValue(),
             range: {
               min: this.schema.min,
-              max: this.schema.max
-            }
+              max: this.schema.max,
+            },
           })
         );
         this.slider.noUiSlider.on("change", this.onChange.bind(this));
@@ -110,8 +110,8 @@ export default defineComponent({
           return this.schema.min;
         }
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

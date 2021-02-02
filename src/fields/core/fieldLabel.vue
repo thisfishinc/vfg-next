@@ -13,7 +13,7 @@ import abstractField from "../abstractField";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  mixins: [abstractField]
+  mixins: [abstractField],
 });
 </script>
 

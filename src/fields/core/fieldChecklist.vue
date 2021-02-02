@@ -74,7 +74,7 @@ export default defineComponent({
 
   data() {
     return {
-      comboExpanded: false
+      comboExpanded: false,
     };
   },
 
@@ -90,7 +90,7 @@ export default defineComponent({
       if (this.value) return this.value.length;
 
       return 0;
-    }
+    },
   },
 
   methods: {
@@ -166,8 +166,8 @@ export default defineComponent({
 
     onExpandCombo() {
       this.comboExpanded = !this.comboExpanded;
-    }
-  }
+    },
+  },
 });
 </script>
 

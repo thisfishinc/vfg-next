@@ -30,7 +30,6 @@ export default defineComponent({
     formatValueToField(value) {
       if (value != null && this.schema.valueOn)
         return value === this.schema.valueOn;
-
       return value;
     },
 
@@ -39,10 +38,9 @@ export default defineComponent({
         if (value) return this.schema.valueOn;
         else return this.schema.valueOff;
       }
-
       return value;
-    }
-  }
+    },
+  },
 });
 </script>
 

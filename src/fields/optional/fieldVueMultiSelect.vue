@@ -81,7 +81,7 @@ export default defineComponent({
         // this will let the multiselect library use the default behavior if customLabel is not specified
         return undefined;
       }
-    }
+    },
   },
   created() {
     // Check if the component is loaded globally
@@ -118,7 +118,7 @@ export default defineComponent({
     },
     onClose(/* value, id */) {
       // console.log("onClose", value, id);
-    }
-  }
+    },
+  },
 });
 </script>

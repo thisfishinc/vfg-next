@@ -31,13 +31,13 @@ export default defineComponent({
   mixins: [abstractField],
 
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       if (window.$ && window.$.fn.datetimepicker) {
         let input = this.$el.querySelector(".form-control");
         $(this.$el)
           .datetimepicker(
             defaults(this.schema.dateTimePickerOptions || {}, {
-              format: inputFormat
+              format: inputFormat,
             })
           )
           .on("dp.change", () => {
@@ -53,9 +53,7 @@ export default defineComponent({
 
   beforeUnmount() {
     if (window.$ && window.$.fn.datetimepicker) {
-      $(this.$el)
-        .data("DateTimePicker")
-        .destroy();
+      $(this.$el).data("DateTimePicker").destroy();
     }
   },
 
@@ -69,8 +67,8 @@ export default defineComponent({
       else return inputFormat;
     },
 
-    ...dateFieldHelper
-  }
+    ...dateFieldHelper,
+  },
 });
 </script>
 

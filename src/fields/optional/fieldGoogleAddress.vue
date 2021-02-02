@@ -42,8 +42,8 @@ export default defineComponent({
         administrative_area_level_1: "long_name",
         administrative_area_level_2: "long_name",
         locality: "long_name",
-        postal_code: "short_name"
-      }
+        postal_code: "short_name",
+      },
     };
   },
 
@@ -56,7 +56,7 @@ export default defineComponent({
         window.google.maps.places.Autocomplete
       ) {
         this.autocomplete = new google.maps.places.Autocomplete(this.$el, {
-          types: ["geocode"]
+          types: ["geocode"],
         });
 
         this.autocomplete.addListener("place_changed", this.pipeAddress);
@@ -106,21 +106,21 @@ export default defineComponent({
      */
     geolocate() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
+        navigator.geolocation.getCurrentPosition((position) => {
           let geolocation = {
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
           };
 
           let circle = new window.google.maps.Circle({
             center: geolocation,
-            radius: position.coords.accuracy
+            radius: position.coords.accuracy,
           });
 
           this.autocomplete.setBounds(circle.getBounds());
         });
       }
-    }
-  }
+    },
+  },
 });
 </script>

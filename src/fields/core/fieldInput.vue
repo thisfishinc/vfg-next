@@ -42,7 +42,7 @@
     <span
       v-if="
         schema.inputType.toLowerCase() === 'color' ||
-          schema.inputType.toLowerCase() === 'range'
+        schema.inputType.toLowerCase() === 'range'
       "
       class="helper"
       >{{ value }}</span
@@ -59,7 +59,7 @@ import { defineComponent } from "vue";
 const DATETIME_FORMATS = {
   date: "YYYY-MM-DD",
   datetime: "YYYY-MM-DD HH:mm:ss",
-  "datetime-local": "YYYY-MM-DDTHH:mm:ss"
+  "datetime-local": "YYYY-MM-DDTHH:mm:ss",
 };
 
 export default defineComponent({
@@ -72,7 +72,7 @@ export default defineComponent({
         return "datetime-local";
       }
       return this.schema.inputType;
-    }
+    },
   },
 
   mounted() {
@@ -86,7 +86,7 @@ export default defineComponent({
           parseInt(objGet(this.schema, "debounceFormatTimeout", 1000)),
           {
             trailing: true,
-            leading: false
+            leading: false,
           }
         );
         break;
@@ -101,7 +101,7 @@ export default defineComponent({
           parseInt(objGet(this.schema, "debounceFormatTimeout", 1000)),
           {
             trailing: true,
-            leading: false
+            leading: false,
           }
         );
         break;
@@ -191,8 +191,8 @@ export default defineComponent({
       if (isFunction(this.debouncedFormatFunc)) {
         this.debouncedFormatFunc.flush();
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -23,12 +23,12 @@ export default defineComponent({
 
   data() {
     return {
-      cleave: null
+      cleave: null,
     };
   },
 
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       if (window.Cleave) {
         this.cleave = new window.Cleave(
           this.$el,
@@ -54,7 +54,7 @@ export default defineComponent({
             numericOnly: false,
             uppercase: false,
             lowercase: false,
-            maxLength: 0
+            maxLength: 0,
           })
         );
 
@@ -83,8 +83,8 @@ export default defineComponent({
   methods: {
     inputChange() {
       this.value = this.$el.value;
-    }
-  }
+    },
+  },
 });
 </script>
 

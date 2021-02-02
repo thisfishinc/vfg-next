@@ -36,17 +36,17 @@ export default defineComponent({
       if (typeof values == "function") {
         return values.apply(this, [this.model, this.schema]);
       } else return values;
-    }
+    },
   },
 
   watch: {
-    model: function() {
+    model: function () {
       if ($.fn.selectpicker) $(this.$el).selectpicker("refresh");
-    }
+    },
   },
 
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       if ($.fn.selectpicker) {
         $(this.$el)
           .selectpicker("destroy")
@@ -101,8 +101,8 @@ export default defineComponent({
       } else {
         return item;
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -6,31 +6,35 @@ import {
   isString,
   isArray,
   isFunction,
-  isFinite
+  isFinite,
 } from "lodash";
 import fecha from "fecha";
 
-let resources = {
+let _app;
+
+const resources = {
   fieldIsRequired: "This field is required!",
   invalidFormat: "Invalid format!",
 
-  numberTooSmall: "The number is too small! Minimum: {0}",
-  numberTooBig: "The number is too big! Maximum: {0}",
+  numberTooSmall: "The number is too small! Minimum: {min}",
+  numberTooBig: "The number is too big! Maximum: {max}",
   invalidNumber: "Invalid number",
   invalidInteger: "The value is not an integer",
 
-  textTooSmall: "The length of text is too small! Current: {0}, Minimum: {1}",
-  textTooBig: "The length of text is too big! Current: {0}, Maximum: {1}",
+  textTooSmall:
+    "The length of text is too small! Current: {current}, Minimum: {min}",
+  textTooBig:
+    "The length of text is too big! Current: {current}, Maximum: {max}",
   thisNotText: "This is not a text!",
 
   thisNotArray: "This is not an array!",
 
-  selectMinItems: "Select minimum {0} items!",
-  selectMaxItems: "Select maximum {0} items!",
+  selectMinItems: "Select minimum {min} items!",
+  selectMaxItems: "Select maximum {max} items!",
 
   invalidDate: "Invalid date!",
-  dateIsEarly: "The date is too early! Current: {0}, Minimum: {1}",
-  dateIsLate: "The date is too late! Current: {0}, Maximum: {1}",
+  dateIsEarly: "The date is too early! Current: {current}, Minimum: {min}",
+  dateIsLate: "The date is too late! Current: {current}, Maximum: {max}",
 
   invalidEmail: "Invalid e-mail address!",
   invalidURL: "Invalid URL!",
@@ -40,13 +44,33 @@ let resources = {
 
   invalidTextContainNumber:
     "Invalid text! Cannot contains numbers or special characters",
-  invalidTextContainSpec: "Invalid text! Cannot contains special characters"
+  invalidTextContainSpec: "Invalid text! Cannot contains special characters",
 };
 
-function checkEmpty(value, required, messages = resources) {
+function msg(text, args = {}) {
+  return text.replace(/{(.*?)}/g, (m, c) => args[c.trim().toLowerCase()]);
+}
+
+function translate(messages, key, args) {
+  if (args && "field" in args) {
+    var field = args.field;
+    if (!("min" in args) && "min" in field) args.min = field.min;
+    if (!("max" in args) && "max" in field) args.max = field.max;
+    args.field = field.name || field.label || field.model;
+  }
+  if (_app && "__VUE_I18N__" in _app) {
+    var translated = "vfg." + key;
+    translated = _app["__VUE_I18N__"].global.t(translated, args);
+    if (translated !== "vfg." + key) return translated;
+  }
+  return msg(messages[key], args);
+}
+
+function checkEmpty(field, value, required, messages = resources) {
   if (isNil(value) || value === "") {
     if (required) {
-      return [msg(messages.fieldIsRequired)];
+      return [translate(messages, "fieldIsRequired", { field: field })];
+      //return [msg(messages.fieldIsRequired)];
     } else {
       return [];
     }
@@ -54,78 +78,83 @@ function checkEmpty(value, required, messages = resources) {
   return null;
 }
 
-function msg(text) {
-  if (text != null && arguments.length > 1) {
-    for (let i = 1; i < arguments.length; i++) {
-      text = text.replace("{" + (i - 1) + "}", arguments[i]);
-    }
-  }
-  return text;
-}
-
 const validators = {
   resources,
 
   required(value, field, model, messages = resources) {
-    return checkEmpty(value, field.required, messages);
+    return checkEmpty(field, value, field.required, messages);
   },
 
   number(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     let err = [];
     if (isFinite(value)) {
       if (!isNil(field.min) && value < field.min) {
-        err.push(msg(messages.numberTooSmall, field.min));
+        err.push(
+          translate(messages, "numberTooSmall", { field: field, value })
+        );
       }
 
       if (!isNil(field.max) && value > field.max) {
-        err.push(msg(messages.numberTooBig, field.max));
+        err.push(translate(messages, "numberTooBig", { field: field, value }));
       }
     } else {
-      err.push(msg(messages.invalidNumber));
+      err.push(translate(messages, "invalidNumber", { field: field, value }));
     }
 
     return err;
   },
 
   integer(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
     let errs = validators.number(value, field, model, messages);
 
     if (!isInteger(value)) {
-      errs.push(msg(messages.invalidInteger));
+      errs.push(translate(messages, "invalidInteger", { field: field, value }));
     }
 
     return errs;
   },
 
   double(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     if (!isNumber(value) || isNaN(value)) {
-      return [msg(messages.invalidNumber)];
+      return [translate(messages, "invalidNumber", { field: field, value })];
     }
   },
 
   string(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     let err = [];
     if (isString(value)) {
       if (!isNil(field.min) && value.length < field.min) {
-        err.push(msg(messages.textTooSmall, value.length, field.min));
+        err.push(
+          translate(messages, "textTooSmall", {
+            field: field,
+            value,
+            current: value.length,
+          })
+        );
       }
 
       if (!isNil(field.max) && value.length > field.max) {
-        err.push(msg(messages.textTooBig, value.length, field.max));
+        err.push(
+          translate(messages, "textTooBig", {
+            field: field,
+            value,
+            current: value.length,
+          })
+        );
       }
     } else {
-      err.push(msg(messages.thisNotText));
+      err.push(translate(messages, "thisNotText", { field: field, value }));
     }
 
     return err;
@@ -134,32 +163,34 @@ const validators = {
   array(value, field, model, messages = resources) {
     if (field.required) {
       if (!isArray(value)) {
-        return [msg(messages.thisNotArray)];
+        return [translate(messages, "thisNotArray", { field: field, value })];
       }
 
       if (value.length === 0) {
-        return [msg(messages.fieldIsRequired)];
+        return [
+          translate(messages, "fieldIsRequired", { field: field, value }),
+        ];
       }
     }
 
     if (!isNil(value)) {
       if (!isNil(field.min) && value.length < field.min) {
-        return [msg(messages.selectMinItems, field.min)];
+        return [translate(messages, "selectMinItems", { field: field, value })];
       }
 
       if (!isNil(field.max) && value.length > field.max) {
-        return [msg(messages.selectMaxItems, field.max)];
+        return [translate(messages, "selectMaxItems", { field: field, value })];
       }
     }
   },
 
   date(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     let m = new Date(value);
     if (isNaN(m.getDate())) {
-      return [msg(messages.invalidDate)];
+      return [translate(messages, "invalidDate", { field: field, value })];
     }
 
     let err = [];
@@ -167,14 +198,28 @@ const validators = {
     if (!isNil(field.min)) {
       let min = new Date(field.min);
       if (m.valueOf() < min.valueOf()) {
-        err.push(msg(messages.dateIsEarly, fecha.format(m), fecha.format(min)));
+        err.push(
+          translate(messages, "dateIsEarly", {
+            field: field,
+            value,
+            current: fecha.format(m),
+            min: fecha.format(min),
+          })
+        );
       }
     }
 
     if (!isNil(field.max)) {
       let max = new Date(field.max);
       if (m.valueOf() > max.valueOf()) {
-        err.push(msg(messages.dateIsLate, fecha.format(m), fecha.format(max)));
+        err.push(
+          translate(messages, "dateIsLate", {
+            field: field,
+            value,
+            current: fecha.format(m),
+            max: fecha.format(max),
+          })
+        );
       }
     }
 
@@ -182,39 +227,39 @@ const validators = {
   },
 
   regexp(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     if (!isNil(field.pattern)) {
       let re = new RegExp(field.pattern);
       if (!re.test(value)) {
-        return [msg(messages.invalidFormat)];
+        return [translate(messages, "invalidFormat", { field: field, value })];
       }
     }
   },
 
   email(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line no-useless-escape
     if (!re.test(value)) {
-      return [msg(messages.invalidEmail)];
+      return [translate(messages, "invalidEmail", { field: field, value })];
     }
   },
 
   url(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     let re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g; // eslint-disable-line no-useless-escape
     if (!re.test(value)) {
-      return [msg(messages.invalidURL)];
+      return [translate(messages, "invalidURL", { field: field, value })];
     }
   },
 
   creditCard(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     /*  From validator.js code
@@ -223,7 +268,7 @@ const validators = {
     const creditCard = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/;
     const sanitized = value.replace(/[^0-9]+/g, "");
     if (!creditCard.test(sanitized)) {
-      return [msg(messages.invalidCard)];
+      return [translate(messages, "invalidCard", { field: field, value })];
     }
     let sum = 0;
     let digit;
@@ -246,38 +291,50 @@ const validators = {
     }
 
     if (!(sum % 10 === 0 ? sanitized : false)) {
-      return [msg(messages.invalidCardNumber)];
+      return [
+        translate(messages, "invalidCardNumber", { field: field, value }),
+      ];
     }
   },
 
   alpha(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     let re = /^[a-zA-Z]*$/;
     if (!re.test(value)) {
-      return [msg(messages.invalidTextContainNumber)];
+      return [
+        translate(messages, "invalidTextContainNumber", {
+          field: field,
+          value,
+        }),
+      ];
     }
   },
 
   alphaNumeric(value, field, model, messages = resources) {
-    let res = checkEmpty(value, field.required, messages);
+    let res = checkEmpty(field, value, field.required, messages);
     if (res != null) return res;
 
     let re = /^[a-zA-Z0-9]*$/;
     if (!re.test(value)) {
-      return [msg(messages.invalidTextContainSpec)];
+      return [
+        translate(messages, "invalidTextContainSpec", { field: field, value }),
+      ];
     }
-  }
+  },
+  init(app) {
+    _app = app;
+  },
 };
 
 let _validators = {};
 
-Object.keys(validators).forEach(name => {
+Object.keys(validators).forEach((name) => {
   _validators[name] = validators[name];
   const fn = validators[name];
   if (isFunction(fn)) {
-    fn.locale = customMessages => (value, field, model) =>
+    fn.locale = (customMessages) => (value, field, model) =>
       fn(value, field, model, defaults(customMessages, resources));
   }
 });

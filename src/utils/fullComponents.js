@@ -20,7 +20,7 @@ import {
   fieldSpectrum,
   fieldStaticMap,
   fieldSwitch,
-  fieldVueMultiSelect
+  fieldVueMultiSelect,
 } from "./fieldsLoader";
 
 export default {
@@ -45,5 +45,5 @@ export default {
   fieldSpectrum,
   fieldStaticMap,
   fieldSwitch,
-  fieldVueMultiSelect
+  fieldVueMultiSelect,
 };

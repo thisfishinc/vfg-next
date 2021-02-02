@@ -24,12 +24,12 @@ export default defineComponent({
 
   data() {
     return {
-      slider: null
+      slider: null,
     };
   },
 
   watch: {
-    model: function() {
+    model: function () {
       if (window.$ && window.$.fn.ionRangeSlider) {
         let valueFrom, valueTo;
         if (isArray(this.value)) {
@@ -39,15 +39,15 @@ export default defineComponent({
         if (this.slider) {
           this.slider.update({
             from: valueFrom,
-            to: valueTo
+            to: valueTo,
           });
         }
       }
-    }
+    },
   },
 
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       if (window.$ && window.$.fn.ionRangeSlider) {
         let valueFrom, valueTo;
         if (isArray(this.value)) {
@@ -68,7 +68,7 @@ export default defineComponent({
               } else {
                 self.value = slider.from;
               }
-            }
+            },
           })
         );
         this.slider = $(this.$el).data("ionRangeSlider");
@@ -82,7 +82,7 @@ export default defineComponent({
 
   beforeUnmount() {
     if (this.slider) this.slider.destroy();
-  }
+  },
 });
 </script>
 

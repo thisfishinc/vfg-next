@@ -25,7 +25,7 @@ export default defineComponent({
   data() {
     return {
       picker: null,
-      options: null
+      options: null,
     };
   },
 
@@ -56,7 +56,7 @@ export default defineComponent({
             field: this.$el, // bind the datepicker to a form field
             onSelect: () => {
               this.value = this.picker.toString();
-            }
+            },
             // trigger: , // use a different element to trigger opening the datepicker, see [trigger example][] (default to `field`)
           });
           this.picker = new window.Pikaday(this.options);
@@ -66,8 +66,8 @@ export default defineComponent({
           );
         }
       });
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -7,7 +7,7 @@ import {
   fieldSelect,
   fieldSubmit,
   fieldTextArea,
-  fieldUpload
+  fieldUpload,
 } from "./fieldsLoader";
 
 export default {
@@ -19,5 +19,5 @@ export default {
   fieldSelect,
   fieldSubmit,
   fieldTextArea,
-  fieldUpload
+  fieldUpload,
 };

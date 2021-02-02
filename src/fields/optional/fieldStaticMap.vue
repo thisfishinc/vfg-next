@@ -20,7 +20,7 @@ export default defineComponent({
           lng: "lng",
           zoom: 8,
           sizeX: 640,
-          sizeY: 640
+          sizeY: 640,
         });
 
         lat = this.value[options.lat];
@@ -39,7 +39,7 @@ export default defineComponent({
           "visible",
           "style",
           "key",
-          "signature"
+          "signature",
         ];
         for (let prop of props) {
           if (typeof options[prop] !== "undefined") {
@@ -51,8 +51,8 @@ export default defineComponent({
         }
       }
       return "";
-    }
-  }
+    },
+  },
 });
 </script>
 

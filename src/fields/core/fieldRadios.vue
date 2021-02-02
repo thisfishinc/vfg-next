@@ -42,7 +42,7 @@ export default defineComponent({
     },
     id() {
       return this.schema.model;
-    }
+    },
   },
 
   methods: {
@@ -85,7 +85,7 @@ export default defineComponent({
     getItemCssClasses(item) {
       return {
         "is-checked": this.isItemChecked(item),
-        "is-disabled": this.isItemDisabled(item)
+        "is-disabled": this.isItemDisabled(item),
       };
     },
     onSelection(item) {
@@ -104,8 +104,8 @@ export default defineComponent({
         return disabled(this.model);
       }
       return disabled;
-    }
-  }
+    },
+  },
 });
 </script>
 

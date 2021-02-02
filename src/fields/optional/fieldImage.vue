@@ -38,11 +38,11 @@ export default defineComponent({
         return {
           display: "block",
           "background-image":
-            this.value != null ? "url(" + this.value + ")" : "none"
+            this.value != null ? "url(" + this.value + ")" : "none",
         };
       } else {
         return {
-          display: "none"
+          display: "none",
         };
       }
     },
@@ -57,8 +57,8 @@ export default defineComponent({
         if (newValue && newValue.indexOf("http") === 0) {
           this.value = newValue;
         }
-      }
-    }
+      },
+    },
   },
 
   watch: {
@@ -67,7 +67,7 @@ export default defineComponent({
       if (el) {
         el.value = "";
       }
-    }
+    },
   },
 
   methods: {
@@ -77,15 +77,15 @@ export default defineComponent({
 
     fileChanged(event) {
       let reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = (e) => {
         this.value = e.target.result;
       };
 
       if (event.target.files && event.target.files.length > 0) {
         reader.readAsDataURL(event.target.files[0]);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 
