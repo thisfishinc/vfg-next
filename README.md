@@ -122,8 +122,8 @@ Full is core + other fields.
 ```html
 
 <script src="https://unpkg.com/vue@next"></script>
-<script src="https://cdn.jsdelivr.net/npm/vfg-next@3.00.6/dist/vfg-next.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/vfg-next@3.00.6/dist/vfg-next.css">
+<script src="https://cdn.jsdelivr.net/npm/vfg-next@3.0.6/dist/vfg-next.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/vfg-next@3.0.6/dist/vfg-next.css">
 
 <script>
   const importGlobal = (module) => window[module]
