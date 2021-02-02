@@ -1,4 +1,4 @@
-# vue-form-generator [![NPM version](https://img.shields.io/npm/v/vue-form-generator.svg)](https://www.npmjs.com/package/vue-form-generator) ![VueJS v2.x compatible](https://img.shields.io/badge/vue%202.x-compatible-green.svg)
+# vfg-next [vue-form-generator] (https://github.com/vue-generators/vue-form-generator) refactor for VueJS 3
 
 A schema-based form generator component for Vue.js 3.
 
