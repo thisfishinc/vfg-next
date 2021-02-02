@@ -124,6 +124,40 @@ If you want the slim down version, here is the changes:
   ...
   app.use(VueFormGenerator,{ components: { fieldInput, fieldRadios } })
 </script>
+
+// CDN
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.jsdelivr.net/npm/vfg-next@3.00.6/dist/vfg-next.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/vfg-next@3.00.6/dist/vfg-next.css">
+
+<script>
+  const importGlobal = (module) => window[module]
+  const {createApp,defineComponent} = importGlobal("Vue");
+  const VFG = importGlobal("vfg-next")
+  const { validators, component, fieldInput, fieldSelect, fieldCheckbox} = VFG
+  const App = defineComponent({
+    components:{"vue-form-generator":component},
+    data(){return {
+      model: {
+        ...
+      },
+      schema: {
+        ...
+      },
+      formOptions: {
+        ...
+      }
+    }}
+  })
+  const app = createApp(App)
+  app.use(VFG.default,{
+    components:{
+      fieldInput, fieldSelect, fieldCheckbox
+    }
+  })
+  app.mount("#app")    
+</script>
+
 ```
 
 ## Usage
@@ -217,17 +251,42 @@ export default {
 
 ```
 
-Usage in local components
-
+[vue-i18n-next](https://github.com/intlify/vue-i18n-next) integration
 ```js
-import { component as VFG } from "vfg-next";
 
-//component javascript
-export default {
-	components: {
-		"vue-form-generator": VFG
-	}
-};
+// literal 
+// {field} field name can be defined in fields data as "name"
+// {current} current value
+// {min} {max} minimum or maximum value / length
+
+const messages = {
+  en: {
+    vfg: {
+      fieldIsRequired: "{field} is required!",
+      invalidFormat: "Invalid format!",
+      numberTooSmall: "The number is too small! Minimum: {min}",
+      numberTooBig: "The number is too big! Maximum: {max}",
+      invalidNumber: "Invalid number",
+      invalidInteger: "The value is not an integer",
+      textTooSmall: "The length of text is too small! Current: {current}, Minimum: {min}",
+      textTooBig: "The length of text is too big! Current: {current}, Maximum: {max}",
+      thisNotText: "This is not a text!",
+      thisNotArray: "This is not an array!",
+      selectMinItems: "Select minimum {min} items!",
+      selectMaxItems: "Select maximum {max} items!",
+      invalidDate: "Invalid date!",
+      dateIsEarly: "The date is too early! Current: {current}, Minimum: {min}",
+      dateIsLate: "The date is too late! Current: {current}, Maximum: {max}",
+      invalidEmail: "Invalid e-mail address!",
+      invalidURL: "Invalid URL!",
+      invalidCard: "Invalid card format!",
+      invalidCardNumber: "Invalid card number!",
+      invalidTextContainNumber: "Invalid text! Cannot contains numbers or special characters",
+      invalidTextContainSpec: "Invalid text! Cannot contains special characters",
+    }
+  }
+}
+
 ```
 
 ## Development
