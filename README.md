@@ -1,6 +1,8 @@
-# vfg-next [vue-form-generator](https://github.com/vue-generators/vue-form-generator) refactor for VueJS 3
+# vfg-next
 
-A schema-based form generator component for Vue.js 3.
+This is a [vue-form-generator](https://github.com/vue-generators/vue-form-generator) refactor to work with VueJS 3
+
+vue-form-generator is a schema-based form generator component for Vue.js
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d27be05a35bf459b9292b8172e314a08)](https://www.codacy.com/app/mereg-norbert/vue-form-generator_2?utm_source=github.com&utm_medium=referral&utm_content=vue-generators/vue-form-generator&utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/vue-generators/vue-form-generator.svg?branch=master)](https://travis-ci.org/vue-generators/vue-form-generator)
