@@ -73,23 +73,22 @@ $ npm install vue-form-generator@0.6.1
 
 ### Manual
 
-Download zip package and unpack and add the vfg.css and vfg.js file to your project from dist folder.
+Download zip package and unpack and add the vfg-next.css and vfg-next.min.js file to your project from dist folder.
 
 ```
-https://github.com/vue-generators/vue-form-generator/archive/master.zip
+https://github.com/bagus/vfg-next/archive/master.zip
 ```
+
+FILES            GZIP     BROTLI
+vfg-next.min.js  39.40KB  35.19KB
+vfg-next.esm.js  16.33KB  14.44KB
+
 
 ### Core vs Full version
 
 VueFormGenerator come in two version : `core` and `full`.
 Core is a more minimal version with only half the fields.
 Full is core + other fields.
-
-*   Full bundle: 172 kB (gzipped: 50 kB)
-*   Core bundle: 146 kB (gzipped: 41 kB)
-
-If you don't know what to choose, don't worry, the full is the default version.
-If you want the slim down version, here is the changes:
 
 ```js
 // the "full" way
@@ -125,7 +124,12 @@ If you want the slim down version, here is the changes:
   app.use(VueFormGenerator,{ components: { fieldInput, fieldRadios } })
 </script>
 
-// CDN
+```
+
+### CDN Version
+
+```html
+
 <script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.jsdelivr.net/npm/vfg-next@3.00.6/dist/vfg-next.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/vfg-next@3.00.6/dist/vfg-next.css">
@@ -254,7 +258,7 @@ export default {
 [vue-i18n-next](https://github.com/intlify/vue-i18n-next) integration
 ```js
 
-// literal 
+// literal
 // {field} field name can be defined in fields data as "name"
 // {current} current value
 // {min} {max} minimum or maximum value / length
