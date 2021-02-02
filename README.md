@@ -1,4 +1,4 @@
-# vfg-next [vue-form-generator] (https://github.com/vue-generators/vue-form-generator) refactor for VueJS 3
+# vfg-next [vue-form-generator](https://github.com/vue-generators/vue-form-generator) refactor for VueJS 3
 
 A schema-based form generator component for Vue.js 3.
 
