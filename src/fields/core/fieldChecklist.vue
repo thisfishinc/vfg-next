@@ -1,5 +1,17 @@
 <template>
   <div v-attributes="'wrapper'" class="wrapper">
+    <div class="list-selected">
+      <template v-for="item in items">
+        <span v-if="isItemChecked(item)" :key="item" class="item-selected">
+          <template v-if="formOptions.i18n && $te(getItemName(item))">
+            {{ $t(getItemName(item)) }}
+          </template>
+          <template v-else>
+            {{ getItemName(item) }}
+          </template>
+        </span>
+      </template>
+    </div>
     <div
       v-if="schema.listBox"
       class="listbox form-control"
@@ -34,7 +46,12 @@
         :class="{ expanded: comboExpanded }"
         @click="onExpandCombo"
       >
-        <div class="info">{{ selectedCount }} selected</div>
+        <div class="info">
+          <template v-if="formOptions.i18n && $te('vfg.selected')">
+            {{ $t("vfg.selected", { count: selectedCount }) }}
+          </template>
+          <template v-else> {{ selectedCount }} selected </template>
+        </div>
         <div class="arrow" />
       </div>
       <div class="dropList">
@@ -54,7 +71,13 @@
                 :disabled="disabled"
                 :name="getInputName(item)"
                 @change="onChanged($event, item)"
-              />{{ getItemName(item) }}
+              />
+              <template v-if="formOptions.i18n && $te(getItemName(item))">
+                {{ $t(getItemName(item)) }}
+              </template>
+              <template v-else>
+                {{ getItemName(item) }}
+              </template>
             </label>
           </div>
         </template>
@@ -173,6 +196,16 @@ export default defineComponent({
 
 <style lang="scss">
 .vue-form-generator .field-checklist {
+  .list-selected {
+    margin: 15px 0px;
+    .item-selected {
+      margin-right: 4px;
+      margin-bottom: 5px;
+      padding: 4px 8px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+  }
   .listbox,
   .dropList {
     height: auto;
@@ -191,6 +224,10 @@ export default defineComponent({
   }
 
   .combobox {
+    width: auto !important;
+    min-width: 0;
+    display: table;
+
     height: initial;
     overflow: hidden;
 

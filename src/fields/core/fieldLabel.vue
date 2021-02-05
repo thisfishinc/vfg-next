@@ -1,11 +1,13 @@
 <template>
-  <span
-    :id="getFieldID(schema)"
-    v-attributes="'label'"
-    :class="schema.fieldClasses"
-  >
-    {{ value }}
-  </span>
+  <div v-attributes="'wrapper'" class="wrapper">
+    <span
+      :id="getFieldID(schema)"
+      v-attributes="'label'"
+      :class="schema.fieldClasses"
+      v-html="schema.text || value"
+    >
+    </span>
+  </div>
 </template>
 
 <script>
@@ -18,7 +20,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.vue-form-generator .field-label span {
+.vue-form-generator .field-label .wrapper {
   display: block;
   width: 100%;
   margin-left: 12px;

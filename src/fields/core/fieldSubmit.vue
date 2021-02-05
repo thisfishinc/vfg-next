@@ -3,7 +3,7 @@
     :id="getFieldID(schema)"
     v-attributes="'input'"
     type="submit"
-    :value="schema.buttonText"
+    :value="$te(schema.buttonText) ? $t(schema.buttonText) : schema.buttonText"
     :name="schema.inputName"
     :disabled="disabled"
     :class="schema.fieldClasses"

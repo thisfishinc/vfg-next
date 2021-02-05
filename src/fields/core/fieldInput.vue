@@ -27,7 +27,15 @@
       :multiple="schema.multiple"
       :name="schema.inputName"
       :pattern="schema.pattern"
-      :placeholder="schema.placeholder"
+      :placeholder="
+        schema.placeholder
+          ? formOptions.i18n
+            ? $te(schema.placeholder)
+              ? $t(schema.placeholder)
+              : schema.placeholder
+            : schema.placeholder
+          : ''
+      "
       :readonly="schema.readonly"
       :required="schema.required"
       :size="schema.size || 20"
@@ -74,7 +82,6 @@ export default defineComponent({
       return this.schema.inputType;
     },
   },
-
   mounted() {
     switch (this.schema.inputType.toLowerCase()) {
       case "number":

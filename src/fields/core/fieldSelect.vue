@@ -13,7 +13,14 @@
       :disabled="schema.required"
       :value="null"
     >
-      {{ selectOptions.noneSelectedText || "&lt;Nothing selected&gt;" }}
+      <template v-if="selectOptions.noneSelectedText">
+        {{
+          formOptions.i18n && $te(selectOptions.noneSelectedText)
+            ? $t(selectOptions.noneSelectedText)
+            : selectOptions.noneSelectedText
+        }}
+      </template>
+      <template v-else> &lt;Nothing selected&gt; </template>
     </option>
     <template v-for="(item, index) in items">
       <optgroup
@@ -23,7 +30,12 @@
       >
         <template v-if="item.ops">
           <option v-for="i in item.ops" :key="i" :value="getItemValue(i)">
-            {{ getItemName(i) }}
+            <template v-if="formOptions.i18n && $te(getItemName(i))">
+              {{ $t(getItemName(i)) }}
+            </template>
+            <template v-else>
+              {{ getItemName(i) }}
+            </template>
           </option>
         </template>
       </optgroup>
@@ -32,7 +44,13 @@
         :key="index + '_option'"
         :value="getItemValue(item)"
       >
-        {{ getItemName(item) }}
+        <template v-if="formOptions.i18n && $te(getItemName(item))">
+          {{ $t(getItemName(item)) }}
+        </template>
+        <template v-else>
+          {{ getItemName(item) }}
+        </template>
+        {{}}
       </option>
     </template>
   </select>

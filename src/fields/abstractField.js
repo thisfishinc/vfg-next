@@ -1,7 +1,7 @@
 import { get as objGet, forEach, isFunction, isString, isArray, debounce, uniqueId, uniq as arrayUniq } from "lodash";
 import validators from "../utils/validators";
 import { slugifyFormID } from "../utils/schema";
-//import { defineComponent } from "vue";
+
 
 function convertValidator(validator) {
 	if (isString(validator)) {
@@ -30,7 +30,6 @@ export default {
 	directives: {
 		attributes: {
 			beforeMount: attributesDirective,
-			//updated: attributesDirective,
 			updated: attributesDirective
 		}
 	},
@@ -42,9 +41,6 @@ export default {
 		"disabled":{type:Boolean,default:false}
 	},
 	emits: ["validated", "model-updated"],
-	setup() {
-
-	},
 	data() {
 		return {
 			errors: [],
@@ -102,9 +98,9 @@ export default {
 
 				forEach(validators, validator => {
 					if (validateAsync) {
-						results.push(validator(this.value, this.schema, this.model));
+						results.push(validator(this.value, this.schema, this.model, this.formOptions.formData));
 					} else {
-						let result = validator(this.value, this.schema, this.model);
+						let result = validator(this.value, this.schema, this.model, this.formOptions.formData);
 						if (result && isFunction(result.then)) {
 							result.then(err => {
 								if (err) {

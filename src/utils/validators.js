@@ -1,4 +1,5 @@
 import {
+  get as objGet,
   defaults,
   isNil,
   isNumber,
@@ -9,18 +10,17 @@ import {
   isFinite,
 } from "lodash";
 import fecha from "fecha";
-
 let _app;
 
-const resources = {
-  fieldIsRequired: "This field is required!",
+export const resources = {
+  fieldIsRequired: "{field} is required!",
   invalidFormat: "Invalid format!",
-
   numberTooSmall: "The number is too small! Minimum: {min}",
   numberTooBig: "The number is too big! Maximum: {max}",
   invalidNumber: "Invalid number",
   invalidInteger: "The value is not an integer",
-
+  needAvailabilityCheck : "{field} availability needs to be checked",
+  textIsNotSameAs: "{field} must be same with {reference}",
   textTooSmall:
     "The length of text is too small! Current: {current}, Minimum: {min}",
   textTooBig:
@@ -48,149 +48,175 @@ const resources = {
 };
 
 function msg(text, args = {}) {
-  return text.replace(/{(.*?)}/g, (m, c) => args[c.trim().toLowerCase()]);
+  return text?text.replace(/{(.*?)}/g, (m, c) => args[c.trim().toLowerCase()]):text;
 }
 
-function translate(messages, key, args) {
-  if (args && "field" in args) {
-    var field = args.field;
-    if (!("min" in args) && "min" in field) args.min = field.min;
-    if (!("max" in args) && "max" in field) args.max = field.max;
-    args.field = field.name || field.label || field.model;
-  }
-  if (_app && "__VUE_I18N__" in _app) {
-    var translated = "vfg." + key;
-    translated = _app["__VUE_I18N__"].global.t(translated, args);
-    if (translated !== "vfg." + key) return translated;
-  }
-  return msg(messages[key], args);
-}
-
-function checkEmpty(field, value, required, messages = resources) {
-  if (isNil(value) || value === "") {
-    if (required) {
-      return [translate(messages, "fieldIsRequired", { field: field })];
-      //return [msg(messages.fieldIsRequired)];
-    } else {
-      return [];
+export function translate(key, args, res) {
+  res = resources ? Object.assign(resources,res) : resources
+  const i18n =
+    _app && "__VUE_I18N__" in _app ? _app["__VUE_I18N__"].global : null;
+  if (args) {
+    if("field" in args) {
+      if (!("min" in args) && "min" in args.field) args.min = args.field.min;
+      if (!("max" in args) && "max" in args.field) args.max = args.field.max;
+      args.fieldName = args.field.name || args.field.label;
+    }
+    if("refField" in args) {
+      args.refFieldName = args.refField.name || args.refField.label;
     }
   }
-  return null;
+  args = {
+    ...args,
+    get field() {
+      return this.fieldName ? i18n.te(this.fieldName) ? i18n.tm(this.fieldName) : this.fieldName : "";
+    },
+    get reference() {
+      return this.refFieldName ? i18n.te(this.refFieldName) ? i18n.tm(this.refFieldName) : this.refFieldName : "";
+    }
+  }
+  return i18n
+    ? {
+        key: "vfg." + key,
+        args: args,
+        message: msg(res[key], args),
+      }
+    : msg(res[key], args);
+}
+
+function checkEmpty(field, value, required, form) {
+
+  return isNil(value) || value === "" || value==false
+    ? required
+      ? [translate("fieldIsRequired", { field: field, value },form.resources)]
+      : []
+    : null;
 }
 
 const validators = {
-  resources,
 
-  required(value, field, model, messages = resources) {
-    return checkEmpty(field, value, field.required, messages);
+  required(value, field, model, form) {
+    return checkEmpty(field, value, field.required, form);
   },
 
-  number(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  number(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     let err = [];
     if (isFinite(value)) {
       if (!isNil(field.min) && value < field.min) {
         err.push(
-          translate(messages, "numberTooSmall", { field: field, value })
+          translate("numberTooSmall", { field: field, value },form.resources)
         );
       }
 
       if (!isNil(field.max) && value > field.max) {
-        err.push(translate(messages, "numberTooBig", { field: field, value }));
+        err.push(translate("numberTooBig", { field: field, value },form.resources));
       }
     } else {
-      err.push(translate(messages, "invalidNumber", { field: field, value }));
+      err.push(translate("invalidNumber", { field: field, value },form.resources));
     }
 
     return err;
   },
 
-  integer(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  integer(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
-    let errs = validators.number(value, field, model, messages);
+    let errs = validators.number(value, field, model, form);
 
     if (!isInteger(value)) {
-      errs.push(translate(messages, "invalidInteger", { field: field, value }));
+      errs.push(translate("invalidInteger", { field: field, value },form.resources));
     }
 
     return errs;
   },
 
-  double(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  double(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     if (!isNumber(value) || isNaN(value)) {
-      return [translate(messages, "invalidNumber", { field: field, value })];
+      return [translate("invalidNumber", { field: field, value },form.resources)];
     }
   },
 
-  string(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  string(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     let err = [];
     if (isString(value)) {
       if (!isNil(field.min) && value.length < field.min) {
         err.push(
-          translate(messages, "textTooSmall", {
+          translate("textTooSmall", {
             field: field,
             value,
             current: value.length,
-          })
+          },form.resources)
         );
       }
 
       if (!isNil(field.max) && value.length > field.max) {
         err.push(
-          translate(messages, "textTooBig", {
+          translate("textTooBig", {
             field: field,
             value,
             current: value.length,
-          })
+          },form.resources)
         );
       }
+      if ("reference" in field) {
+        var reference = objGet(form.record,field.reference)
+        //console.log(field.reference,value,reference,"rec",record)
+        if (reference!==value)
+          err.push(
+            translate("textIsNotSameAs", {
+              field: field,
+              refField: form.fields[field.reference],
+              value,
+              current: value.length,
+            },form.resources)
+          );
+      }
     } else {
-      err.push(translate(messages, "thisNotText", { field: field, value }));
+      err.push(translate("thisNotText", { field: field, value,refere },form.resources));
     }
 
     return err;
   },
 
-  array(value, field, model, messages = resources) {
+  array(value, field, model, form) {
     if (field.required) {
       if (!isArray(value)) {
-        return [translate(messages, "thisNotArray", { field: field, value })];
+        return [translate("thisNotArray", { field: field, value },form.resources)];
       }
 
       if (value.length === 0) {
         return [
-          translate(messages, "fieldIsRequired", { field: field, value }),
+          translate("fieldIsRequired", { field: field, value },form.resources),
         ];
       }
     }
 
     if (!isNil(value)) {
       if (!isNil(field.min) && value.length < field.min) {
-        return [translate(messages, "selectMinItems", { field: field, value })];
+        return [translate("selectMinItems", { field: field, value },form.resources)];
       }
 
       if (!isNil(field.max) && value.length > field.max) {
-        return [translate(messages, "selectMaxItems", { field: field, value })];
+        return [translate("selectMaxItems", { field: field, value },form.resources)];
       }
     }
   },
 
-  date(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  date(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     let m = new Date(value);
     if (isNaN(m.getDate())) {
-      return [translate(messages, "invalidDate", { field: field, value })];
+      return [translate("invalidDate", { field: field, value },form.resources)];
     }
 
     let err = [];
@@ -199,12 +225,12 @@ const validators = {
       let min = new Date(field.min);
       if (m.valueOf() < min.valueOf()) {
         err.push(
-          translate(messages, "dateIsEarly", {
+          translate("dateIsEarly", {
             field: field,
             value,
             current: fecha.format(m),
             min: fecha.format(min),
-          })
+          },form.resources)
         );
       }
     }
@@ -213,12 +239,12 @@ const validators = {
       let max = new Date(field.max);
       if (m.valueOf() > max.valueOf()) {
         err.push(
-          translate(messages, "dateIsLate", {
+          translate("dateIsLate", {
             field: field,
             value,
             current: fecha.format(m),
             max: fecha.format(max),
-          })
+          },form.resources)
         );
       }
     }
@@ -226,40 +252,43 @@ const validators = {
     return err;
   },
 
-  regexp(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  regexp(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     if (!isNil(field.pattern)) {
       let re = new RegExp(field.pattern);
       if (!re.test(value)) {
-        return [translate(messages, "invalidFormat", { field: field, value })];
+        return [translate("invalidFormat", { field: field, value },form.resources)];
       }
     }
   },
-
-  email(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  availability(value, field, model, form) {
+    if(value&&field.unavailable)
+        return [translate("needAvailabilityCheck", { field: field, value },form.resources)];
+  },
+  email(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line no-useless-escape
     if (!re.test(value)) {
-      return [translate(messages, "invalidEmail", { field: field, value })];
+      return [translate("invalidEmail", { field: field, value },form.resources)];
     }
   },
 
-  url(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  url(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     let re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g; // eslint-disable-line no-useless-escape
     if (!re.test(value)) {
-      return [translate(messages, "invalidURL", { field: field, value })];
+      return [translate("invalidURL", { field: field, value },form.resources)];
     }
   },
 
-  creditCard(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  creditCard(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     /*  From validator.js code
@@ -268,7 +297,7 @@ const validators = {
     const creditCard = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/;
     const sanitized = value.replace(/[^0-9]+/g, "");
     if (!creditCard.test(sanitized)) {
-      return [translate(messages, "invalidCard", { field: field, value })];
+      return [translate("invalidCard", { field: field, value },form.resources)];
     }
     let sum = 0;
     let digit;
@@ -292,34 +321,34 @@ const validators = {
 
     if (!(sum % 10 === 0 ? sanitized : false)) {
       return [
-        translate(messages, "invalidCardNumber", { field: field, value }),
+        translate("invalidCardNumber", { field: field, value },form.resources),
       ];
     }
   },
 
-  alpha(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  alpha(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     let re = /^[a-zA-Z]*$/;
     if (!re.test(value)) {
       return [
-        translate(messages, "invalidTextContainNumber", {
+        translate("invalidTextContainNumber", {
           field: field,
           value,
-        }),
+        },form.resources),
       ];
     }
   },
 
-  alphaNumeric(value, field, model, messages = resources) {
-    let res = checkEmpty(field, value, field.required, messages);
+  alphaNumeric(value, field, model, form) {
+    let res = checkEmpty(field, value, field.required, form);
     if (res != null) return res;
 
     let re = /^[a-zA-Z0-9]*$/;
     if (!re.test(value)) {
       return [
-        translate(messages, "invalidTextContainSpec", { field: field, value }),
+        translate("invalidTextContainSpec", { field: field, value },form.resources),
       ];
     }
   },
@@ -333,10 +362,12 @@ let _validators = {};
 Object.keys(validators).forEach((name) => {
   _validators[name] = validators[name];
   const fn = validators[name];
+  /*
   if (isFunction(fn)) {
     fn.locale = (customMessages) => (value, field, model) =>
       fn(value, field, model, defaults(customMessages, resources));
   }
+  */
 });
 
 export default _validators;

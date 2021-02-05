@@ -9,7 +9,7 @@
           :field="field"
           :errors="errors"
           :model="model"
-          :options="options"
+          :options="formOptions"
           @validated="onFieldValidated"
           @model-updated="onModelUpdated"
         />
@@ -22,7 +22,12 @@
       :class="getFieldRowClasses(group)"
     >
       <legend v-if="group.legend">
-        {{ group.legend }}
+        <template v-if="formOptions.i18n">
+          {{ $te(group.legend) ? $t(group.legend) : group.legend }}
+        </template>
+        <template v-else>
+          {{ group.legend }}
+        </template>
       </legend>
       <template v-for="field in group.fields">
         <form-group
@@ -32,7 +37,7 @@
           :field="field"
           :errors="errors"
           :model="model"
-          :options="options"
+          :options="formOptions"
           @validated="onFieldValidated"
           @model-updated="onModelUpdated"
         />
@@ -43,6 +48,7 @@
 
 <script>
 import { get as objGet, forEach, isFunction, isNil, isArray } from "lodash";
+import { resources } from "./utils/validators";
 import formMixin from "./formMixin.js";
 import formGroup from "./formGroup.vue";
 
@@ -70,6 +76,7 @@ export default defineComponent({
       type: Object,
       default() {
         return {
+          i18n: false,
           validateAfterLoad: false,
           validateAfterChanged: false,
           fieldIdPrefix: "",
@@ -101,6 +108,7 @@ export default defineComponent({
   data() {
     return {
       vfg: this,
+      formOptions: this.options,
       errors: [], // Validation errors
     };
   },
@@ -149,7 +157,28 @@ export default defineComponent({
       }
     },
   },
+  beforeMount() {
+    // disable i18n if not installed
+    if (this.formOptions.i18n && !this.$i18n) this.formOptions.i18n = false;
+    var fieldSet = {}
+    if(this.schema.fields)
+    this.schema.fields.forEach((field, i) => {
+      fieldSet[field.model] = field
+    });
+    this.groups.forEach((group)=>{
+      group.fields.forEach((field, i) => {
+        fieldSet[field.model] = field
+      });
+    })
+    this.formOptions.formData = {
+      record: this.model,
+      fields: fieldSet,
+      resources: this.formOptions.resources ? Object.assign(resources,this.formOptions.resources) : resources,
+      components: []
+    }
 
+
+  },
   mounted() {
     this.$nextTick(() => {
       if (this.model) {
@@ -210,7 +239,7 @@ export default defineComponent({
       let fields = [];
       let results = [];
 
-      forEach(this.$children, (child) => {
+      forEach(this.formOptions.formData.components, (child) => {
         if (isFunction(child.validate)) {
           fields.push(child.$refs.child); // keep track of validated children
           results.push(child.validate(true));
