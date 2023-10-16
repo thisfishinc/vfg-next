@@ -1,6 +1,6 @@
 {
   "name": "vfg-next",
-  "version": "3.00.7",
+  "version": "3.0.7",
   "description": "A schema-based form generator component for Vue.js 3",
   "homepage": "https://github.com/bagus/vfg-next/",
   "private": false,
